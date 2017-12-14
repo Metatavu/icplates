@@ -38,7 +38,9 @@ public class Main {
   private static final String OPTION_TEMPLATES_FOLDER = "templates-folder";
   private static final String OPTION_PRINT_IMAGES = "print-images";
   private static final String OPTION_THREAD_COUNT = "thrad-count";
-  private static final String OPTION_SCORE_THRESHOLD = "scrore-threshold";
+  private static final String OPTION_SCORE_THRESHOLD = "score-threshold";
+  private static final String OPTION_DISABLE_TRANSPARENTIZATION = "disable-transparentization";
+  private static final String OPTION_ALL_PAGES = "all-pages";
   private static final String OPTION_HELP = "help";
   
   private Main() {
@@ -67,7 +69,7 @@ public class Main {
     PlateCategorizerExecutor categorizerExecutor = new PlateCategorizerExecutor(threadCount);
 
     try {
-      PdfRenderer pdfRenderer = new PdfRenderer(false, true);
+      PdfRenderer pdfRenderer = new PdfRenderer(options.hasOption(OPTION_ALL_PAGES), !options.hasOption(OPTION_DISABLE_TRANSPARENTIZATION));
       List<PlateCategorizationTask> categorizationTasks = new ArrayList<>();
       
       for (File pdfFile : pdfFiles) {
@@ -91,7 +93,7 @@ public class Main {
    
     System.exit(0);
   }
-
+  
   private static CommandLine handleOptions(String[] args) {
     Options options = new Options();
     
@@ -99,6 +101,8 @@ public class Main {
     options.addOption(createOption(false, "c", OPTION_THREAD_COUNT, true, "Thread count used for analyzing. Defaults to 3"));
     options.addOption(createOption(false, "s", OPTION_SCORE_THRESHOLD, true, "Score threshold (0 is prefect match). Defaults to -1000"));
     options.addOption(createOption(false, "i", OPTION_PRINT_IMAGES, true, "Print visualization of discovered patterns into specified folder."));
+    options.addOption(createOption(false, "o", OPTION_DISABLE_TRANSPARENTIZATION, false, "Disable coversion of PDF's white background into transparent background."));
+    options.addOption(createOption(false, "a", OPTION_ALL_PAGES, false, "Use all pages for categorization instead of just first."));
     options.addOption(createOption(false, "h", OPTION_HELP, false, "Prints help"));
 
     CommandLineParser parser = new DefaultParser();
